@@ -29,3 +29,14 @@ cs:64bit linux stageless non-meterpreter
 stageless: felteszel egy fájlt és csinál egy shell-t, nc-vel működik
 staged: több fázisú, főleg kommunikál, nc-vel nem működika
 meterpreter: nem működik nc-vel
+
+Aloldalkeresés:
+dirb vagy dirbuster
+dirb <ip> <wordlist>: (órán /usr/share/wordlists/dirb/common.txt , valóságban ez kevés)
+ -r -- alapból rekurzív, ez a nem rekurzívan
+ -R -- interaktívan rekurzívan
+ -u <username:password> -- felhasználónév/jelszó
+ -x <fájl> -- kiterjesztés próbálgatás, a kiterjesztések egy fájlban listázva;
+ -X <.png .jpg> -- -x-hez hasonló, itt megadjuk a kiterjesztéseket
+
+BasicAuth - alap auth weben
