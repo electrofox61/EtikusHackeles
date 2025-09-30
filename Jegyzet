@@ -1,0 +1,31 @@
+ethack.infra.inf.unideb.hu
+Student<szám> (felhasználónév és jelszó)
+vnc.html-ben Stud<szám>
+Nmap
+ <IP> -- infókat mond az ip-ről
+ -sn <IP tart> -- ip felderítés
+ -p <port/tartomány> <IP> -- portok tesztelés -p- az összes, -sU az UDP-t is nézi
+ -sS -- syn scan (stealth scan)
+ -sV -- megnézzük mi fut a porton
+ -O -- OS scan, tipp
+ -T0...5 -- timing, alapból 3, ne nagyon változtassuk, nagyobb gyorsabb
+ -Pn -- ping no, ha szerinte ki van kapcsolva de tudjuk hogy be van kapcsolva az eszköz akkor csináljuk
+ --script ssh -- scriptek futtatása, vulnerabilitykhez, --script safe nem omlaszt össze rendszereket
+
+TCP akkor is válaszol ha zárva van, UDP-nél nem tudhatjuk
+Nmap által porthoz rendelt service nem feltétlen helyes
+ctrl+l terminál törlés
+
+netcat: nc
+ -lvp 4444 -- 4444-es porton listenert nyit
+ -v ip:port -- csatlakozás az ip:porthoz
+ -e /bin/bash -- speciális nc kell hozzá, execute jog is, így jutunk be egy gépre úgy hogy shellbe is tudjunk írni
+
+msfvenom
+https://infinitelogins.com/2020/01/25/msfvenom-reverse-shell-payload-cheatsheet/
+
+cs:64bit linux stageless non-meterpreter
+
+stageless: felteszel egy fájlt és csinál egy shell-t, nc-vel működik
+staged: több fázisú, főleg kommunikál, nc-vel nem működika
+meterpreter: nem működik nc-vel
