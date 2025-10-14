@@ -84,3 +84,4 @@ RCE (Remote Code Execution) sérülékenység kihasználása:
    - /tmp/shell.elf
 
 Fenti parancsok egy php fájlba, ami githubon is fent van.
+Ebből interaktív shell-t úgy csinálunk hogy "python3 -c "import pty;pty.spawn('/bin/bash')"
