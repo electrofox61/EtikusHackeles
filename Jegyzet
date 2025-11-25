@@ -109,7 +109,7 @@ jelszófájl leredukálása csak 5000 sornyira: cat /usr/share/wordlists/rockyou
 Sérülékenységek külső oldalról:
   -keresünk https://www.exploit-db.com/ oldalon sérülékenységet (cross-site scripting nem jó, minél újabbat keresünk, pipásnak kell lennie)
   -letöltjük a megfelelő .py file-t
-  -terminálban elindítjuk a jó paraméterrel (egyszer elindítod elmondja hogy kell)
+  -terminálban elindítjuk a jó paraméterrel (egyszer elindítod elmondja hogy kell) (python3 <fájlnév>)
   -ki cat-eled a .py fájlt és a végén elmondja mit csinált (pl. új admin felhasználót hoz létre) (ha parancsokat kell megadni akkor idézőjel használata kötelező több parancsnál)
 
 (verziókeresés: oldalaknál jobb klikk és view page source, ott pl. sok résznél a verziószám, vagy a pontos rész verziószáma, esetleg belépés után pl. phpmyadmin megmondja)
@@ -119,8 +119,25 @@ Sérülékenységek külső oldalról:
 ------------------------------------------------------------------------
 linpeas; winpeas - infógyűjtő linuxos/windowsos gépről, az áldozat gépére kell felrakni, valóságban hasznos, zh-ban nem hasznos
 
+Cél a felhasználóváltás minél nagyobb jogokhoz
 
+cat /etc/passwd
+fontosak: root és minden emberi felhasználó
 
+minden felhasználóváltás során érdemes végrehajtani:
+ -sudo -l -- tudok-e más nevében futtatni parancsokat
+ -find / -perm -u=s -type f 2>/dev/null -- SUID bit keresése ((vagy -u-s?))
+  -https://gtfobins.github.io/ -- melyik parancsokat lehet ezekből kihasználni, SUID bit részt keressük
+  -összehasonlítjuk a saját (nem feltörhető) géppel, és a különböző állományokra figyelünk
+  -ha találunk jó fájlt akkor azt futtatjuk a gtfobins-nek megfelelő paranccsal
+ -jogosultságok:
+  -/etc/passwd -- passwd második értéke a jelszó (x vagy encrypted)
+   -ha találunk valakit pl. passwd-ben, akkor létrehozhatunk egy új fájlt a következő bejegyzésformával, <Név>:<HASH>:<ID>:<GID>:<COMMENT>:<HOME_MAPPA>:<SHELL> (hash-hez egy olyan hash-t használunk amit már ismerünk, id és gid lehet 0 hogy root-ok legyünk)
+   -jelszótörés: sudo <név amit feltörünk> <passwd sor típusú fájl> --wordlist=<wordlist> (--format=crypt)
+    -crypt típusa az a $y kezdéstől függ, ha nincs $y akkor nem kell semmi, ha $y a kezdés akkor --format=crypt
+   -/etc/shadow
+  -jogosultságok végén a "+" jel az ACL:
+   -getfacl /etc/passwd -- meg tudjuk nézni az ezen belüli jogosultságokat
 ------------------------------------------------------------------------
 Példák:
 ------------------------------------------------------------------------
