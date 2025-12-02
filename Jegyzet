@@ -114,6 +114,7 @@ Sérülékenységek külső oldalról:
 
 (verziókeresés: oldalaknál jobb klikk és view page source, ott pl. sok résznél a verziószám, vagy a pontos rész verziószáma, esetleg belépés után pl. phpmyadmin megmondja)
 
+
 ------------------------------------------------------------------------
 2. fázis
 ------------------------------------------------------------------------
@@ -138,6 +139,14 @@ minden felhasználóváltás során érdemes végrehajtani:
    -/etc/shadow
   -jogosultságok végén a "+" jel az ACL:
    -getfacl /etc/passwd -- meg tudjuk nézni az ezen belüli jogosultságokat
+((bob: kingkong jelszó))
+((  - sudo -u juliet /usr/bin/python3 /home/bob/pwesent_from_juliet.py ))
+  - ha tud futtatni egy .py fájlt akkor azt ki tudjuk használni az import kijátszásával (elsőnek ugyan abból a mappából keresi az importálandó fájlt)
+   - pl. echo 'print("Feltortelek!!!!")' > random.py ((idézőjelek és hogy milyen idézőjelek az fontos))
+   - pl. echo 'import pty;pty.spawn("/bin/bash")' > random.py -- ezzel konkrétan átlépünk juliet fiókjába
+  - ha találunk egy .c fájlt (forráskód fájlt), azt tudjuk futtatni/cat-elni hogy megnézzük van-e benne egy parancs (chatgpt-nek is lehet megadni kimenetet hogy megtudjuk)
+(( ghydra használható arra hogy már lefordított fájlt reverse engineer-ezzünk, de ez vizsgán nem kell))
+
 ------------------------------------------------------------------------
 Példák:
 ------------------------------------------------------------------------
