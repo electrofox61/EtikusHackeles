@@ -150,7 +150,7 @@ minden felhasználóváltás során érdemes végrehajtani:
  -jogosultságok:
   -/etc/passwd -- passwd második értéke a jelszó (x vagy encrypted)
    -ha találunk valakit pl. passwd-ben, akkor létrehozhatunk egy új fájlt a következő bejegyzésformával, <Név>:<HASH>:<ID>:<GID>:<COMMENT>:<HOME_MAPPA>:<SHELL> (hash-hez egy olyan hash-t használunk amit már ismerünk, id és gid lehet 0 hogy root-ok legyünk)
-   -jelszótörés: sudo <név amit feltörünk> <passwd sor típusú fájl> --wordlist=<wordlist> (--format=crypt)
+   -jelszótörés: sudo john <passwd sor típusú fájl> --wordlist=<wordlist> (--format=crypt)
     -crypt típusa az a $y kezdéstől függ, ha nincs $y akkor nem kell semmi, ha $y a kezdés akkor --format=crypt
    -/etc/shadow
   -jogosultságok végén a "+" jel az ACL:
